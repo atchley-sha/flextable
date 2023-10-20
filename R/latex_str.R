@@ -327,7 +327,7 @@ augment_part_separators <- function(z, no_container = TRUE) {
     merge(z[, list(ft_row_id = max(.SD$ft_row_id)), by = ".part"],
       data.frame(
         .part = factor(c("header", "body", "footer"), levels = c("header", "body", "footer")),
-        part_sep = if (no_container) c("\\endfirsthead", "", "\\endfoot") else c("\\\\", "", ""),
+        part_sep = if (no_container) c("\\endfirsthead", "", "\\endfoot") else c("", "", ""),
         stringsAsFactors = FALSE
       ),
       by = c(".part")
@@ -342,7 +342,7 @@ augment_part_separators <- function(z, no_container = TRUE) {
   if ("header" %in% z$.part & no_container) {
     z_header <- z[z$.part %in% "header", ]
     z_header$ft_row_id <- z_header$ft_row_id + max(z_header$ft_row_id)
-    z_header$part_sep[nrow(z_header)] <- ifelse(no_container, "\\endhead", "\\\\")
+    z_header$part_sep[nrow(z_header)] <- "\\endhead"
     z <- rbind(z[z$.part %in% "header", ], z_header, z[!z$.part %in% "header", ])
   }
 
