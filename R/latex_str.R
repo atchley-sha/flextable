@@ -197,10 +197,15 @@ gen_raw_latex <- function(x, lat_container = latex_container_none(),
   align_tag <- latex_table_align(x)
 
   table_start <- sprintf(
-    "\\begin{longtable}[%s]{%s}",
-    align_tag, paste(column_sizes_latex, collapse = "")
+    "\\begin{%s}[%s]{%s}",
+    ifelse(inherits(lat_container, "latex_container_none"), "longtable", "tabular"),
+    align_tag,
+    paste(column_sizes_latex, collapse = "")
   )
-  table_end <- "\\end{longtable}"
+  table_end <- sprintf(
+    "\\end{%s}",
+    ifelse(inherits(lat_container, "latex_container_none"), "longtable", "tabular")
+  )
 
   if (x$properties$opts_pdf$caption_repeat && topcaption) {
     second_caption <- gsub("\\caption", "\\caption[]", caption)
@@ -322,7 +327,7 @@ augment_part_separators <- function(z, no_container = TRUE) {
     merge(z[, list(ft_row_id = max(.SD$ft_row_id)), by = ".part"],
       data.frame(
         .part = factor(c("header", "body", "footer"), levels = c("header", "body", "footer")),
-        part_sep = if (no_container) c("\\endfirsthead", "", "\\endfoot") else c("\\endfirsthead", "", ""),
+        part_sep = if (no_container) c("\\endfirsthead", "", "\\endfoot") else c("\\\\", "", ""),
         stringsAsFactors = FALSE
       ),
       by = c(".part")
@@ -337,7 +342,7 @@ augment_part_separators <- function(z, no_container = TRUE) {
   if ("header" %in% z$.part) {
     z_header <- z[z$.part %in% "header", ]
     z_header$ft_row_id <- z_header$ft_row_id + max(z_header$ft_row_id)
-    z_header$part_sep[nrow(z_header)] <- "\\endhead"
+    z_header$part_sep[nrow(z_header)] <- ifelse(no_container, "\\endhead", "\\\\")
     z <- rbind(z[z$.part %in% "header", ], z_header, z[!z$.part %in% "header", ])
   }
 

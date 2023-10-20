@@ -1,0 +1,18 @@
+---
+format: pdf
+keep-tex: true
+---
+
+```{r}
+#| label: tbl-test
+#| tbl-cap: test
+
+library(tidyverse)
+library(devtools)
+load_all()
+
+# set_flextable_defaults(float = "float")
+
+flextable(head(mtcars))
+```
+
