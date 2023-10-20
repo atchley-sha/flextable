@@ -339,7 +339,7 @@ augment_part_separators <- function(z, no_container = TRUE) {
 
   z <- merge(z, part_separators, by = c(".part", "ft_row_id"))
 
-  if ("header" %in% z$.part) {
+  if ("header" %in% z$.part & no_container) {
     z_header <- z[z$.part %in% "header", ]
     z_header$ft_row_id <- z_header$ft_row_id + max(z_header$ft_row_id)
     z_header$part_sep[nrow(z_header)] <- ifelse(no_container, "\\endhead", "\\\\")
